@@ -6,11 +6,11 @@
     <title>SANN404 Screenshot Tool</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="bg-grid"></div>
+    <div class="bg-container"></div>
 
     <nav class="navbar">
         <div class="nav-content">
@@ -20,23 +20,52 @@
             </div>
             
             <div class="menu-trigger" onclick="toggleSidebar()">
-                <i class="ri-more-2-fill"></i>
+                <i class="ri-menu-4-fill"></i>
             </div>
         </div>
     </nav>
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo-wrapper">
-                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="Logo" class="sidebar-logo">
-            </div>
+            <h3>MENU</h3>
             <button onclick="toggleSidebar()"><i class="ri-close-line"></i></button>
         </div>
-        <ul class="sidebar-links">
-            <li><a href="#generator" onclick="toggleSidebar()"><i class="ri-macbook-line"></i> Generator</a></li>
-            <li><a href="#docs" onclick="toggleSidebar()"><i class="ri-book-read-line"></i> API Docs</a></li>
-            <li><a href="#about" onclick="toggleSidebar()"><i class="ri-information-line"></i> Tentang</a></li>
-        </ul>
+        
+        <div class="sidebar-list">
+            <div class="sidebar-card" onclick="scrollToSection('generator'); toggleSidebar()">
+                <div class="img" style="background: linear-gradient(#d7cfcf, #9198e5);"></div>
+                <div class="textBox">
+                    <div class="textContent">
+                        <p class="h1">Generator</p>
+                        <span class="span">TOOL</span>
+                    </div>
+                    <p class="p">Capture website screenshot</p>
+                </div>
+            </div>
+
+            <div class="sidebar-card" onclick="scrollToSection('docs'); toggleSidebar()">
+                <div class="img" style="background: linear-gradient(#4facfe, #00f2fe);"></div>
+                <div class="textBox">
+                    <div class="textContent">
+                        <p class="h1">API Docs</p>
+                        <span class="span">DEV</span>
+                    </div>
+                    <p class="p">Integration guide</p>
+                </div>
+            </div>
+
+            <div class="sidebar-card" onclick="scrollToSection('about'); toggleSidebar()">
+                <div class="img" style="background: linear-gradient(#43e97b, #38f9d7);"></div>
+                <div class="textBox">
+                    <div class="textContent">
+                        <p class="h1">About</p>
+                        <span class="span">INFO</span>
+                    </div>
+                    <p class="p">System version & info</p>
+                </div>
+            </div>
+        </div>
+
         <div class="sidebar-footer">
             <p>Powered by <strong>SANN404</strong></p>
         </div>
@@ -44,13 +73,16 @@
 
     <main class="container">
         
-        <section id="generator" class="card glow-border">
-            <div class="card-header">
-                <div class="header-icon"><i class="ri-camera-lens-line"></i></div>
-                <div>
-                    <h2>Capture The Web</h2>
-                    <p>High-performance rendering engine.</p>
-                </div>
+        <section id="generator" class="main-card glow-border">
+            <div class="card-header-visual">
+                <svg viewBox="0 0 550 100" class="banner-svg">
+                    <g class="layer">
+                        <text x="10" y="70" font-family="Inter" font-weight="800" font-size="50" fill="#fff" id="text">CAPTURE THE WEB</text>
+                        <rect x="480" y="25" width="50" height="50" fill="#353535" rx="10" id="box"></rect>
+                        <path d="M10 10 L25 25 L18 25 L22 35 L19 36 L15 26 L10 30 Z" fill="white" stroke="black" stroke-width="2" transform="translate(0,0)" id="cursor"/>
+                    </g>
+                </svg>
+                <p class="subtitle">High-performance rendering engine V2.5</p>
             </div>
             
             <form id="ss-form">
@@ -66,14 +98,14 @@
                     <div class="form-group">
                         <label>VIEWPORT WIDTH</label>
                         <div class="input-wrapper">
-                            <i class="ri-arrow-left-right-line"></i>
+                            <i class="ri-macbook-line"></i>
                             <input type="number" id="width" value="1280">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>VIEWPORT HEIGHT</label>
                         <div class="input-wrapper">
-                            <i class="ri-arrow-up-down-line"></i>
+                            <i class="ri-smartphone-line"></i>
                             <input type="number" id="height" value="720">
                         </div>
                     </div>
@@ -85,7 +117,7 @@
                         <div class="select-wrapper">
                             <select id="scale">
                                 <option value="1">1x (Standard)</option>
-                                <option value="2">2x (High DPI)</option>
+                                <option value="2">2x (Retina/HD)</option>
                                 <option value="3">3x (Ultra HD)</option>
                             </select>
                             <i class="ri-arrow-down-s-line arrow-icon"></i>
@@ -101,8 +133,16 @@
                 </div>
 
                 <button type="submit" id="submit-btn" class="btn-primary">
-                    <span id="btn-text">INITIATE CAPTURE <i class="ri-arrow-right-line"></i></span>
-                    <div class="loader" id="loader"></div>
+                    <span id="btn-text">INITIATE CAPTURE</span>
+                    <div class="loader" id="loader">
+                        <div class="loader-square"></div>
+                        <div class="loader-square"></div>
+                        <div class="loader-square"></div>
+                        <div class="loader-square"></div>
+                        <div class="loader-square"></div>
+                        <div class="loader-square"></div>
+                        <div class="loader-square"></div>
+                    </div>
                 </button>
             </form>
 
@@ -113,153 +153,77 @@
                         <span class="dot red"></span>
                         <span class="dot yellow"></span>
                         <span class="dot green"></span>
+                        <div class="adress-bar"></div>
                     </div>
                     <img id="result-img" src="" alt="Screenshot Result">
                 </div>
-                <a id="download-btn" href="#" target="_blank" class="btn-secondary">
-                    <i class="ri-download-cloud-2-line"></i> DOWNLOAD HIGH-RES
-                </a>
+                <button id="download-btn" class="btn-secondary">
+                    <i class="ri-download-cloud-2-line"></i> DOWNLOAD IMAGE
+                </button>
             </div>
         </section>
 
-        <section id="docs" class="card mt-2">
-            <div class="card-header">
-                <div class="header-icon"><i class="ri-code-s-slash-line"></i></div>
-                <div>
-                    <h2>API Documentation</h2>
-                    <p>Technical reference for developers.</p>
-                </div>
-            </div>
+        <section id="docs" class="mt-2">
+            <h2 class="section-title"><i class="ri-book-3-line"></i> Documentation</h2>
             
-            <div class="doc-content">
-                <div class="endpoint-box">
-                    <span class="method">POST</span>
-                    <span class="url">/api/screenshot</span>
+            <div class="docs-grid">
+                
+                <div class="doc-card">
+                    <div class="header">
+                        <span class="username">ENDPOINT INFO</span>
+                    </div>
+                    <div class="body">
+                        <p class="text">Method: <span style="color: #F8D7DA; font-weight: bold;">POST</span></p>
+                        <p class="text">URL: <span style="color: #D1E7DD; font-family: monospace;">/api/screenshot</span></p>
+                        <p class="text">Content-Type: application/json</p>
+                    </div>
+                    <div class="footer">
+                        <div class="viewer">
+                           <span><i class="ri-server-line"></i></span>
+                           Server Status: Active
+                        </div>
+                    </div>
                 </div>
 
-                <div class="doc-section">
-                    <h3><i class="ri-file-list-3-line"></i> Request Headers</h3>
-                    <p>Header wajib yang harus disertakan dalam setiap request.</p>
-                    <table class="doc-table">
-                        <thead>
-                            <tr>
-                                <th width="30%">Header Name</th>
-                                <th>Value</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>Content-Type</code></td>
-                                <td><code>application/json</code></td>
-                                <td>Format data wajib JSON.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="doc-card">
+                    <div class="header">
+                        <span class="username">REQUIRED PARAMS</span>
+                    </div>
+                    <div class="body">
+                        <p class="text"><strong>url</strong> (string): <br>Target URL website lengkap (https://...).</p>
+                    </div>
+                    <div class="footer">
+                        <div>
+                           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                           Mandatory
+                        </div>
+                    </div>
                 </div>
 
-                <div class="doc-section">
-                    <h3><i class="ri-database-2-line"></i> Request Body Parameters</h3>
-                    <p>Parameter yang dikirimkan dalam body JSON.</p>
-                    <table class="doc-table">
-                        <thead>
-                            <tr>
-                                <th>Parameter</th>
-                                <th>Type</th>
-                                <th>Required</th>
-                                <th>Default</th>
-                                <th>Description & Validation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>url</code></td>
-                                <td class="type-string">String</td>
-                                <td class="req-yes">YES</td>
-                                <td>-</td>
-                                <td>Target URL website. <strong>Wajib</strong> diawali dengan <code>https://</code> atau <code>http://</code>.</td>
-                            </tr>
-                            <tr>
-                                <td><code>width</code></td>
-                                <td class="type-number">Number</td>
-                                <td class="req-no">NO</td>
-                                <td><code>1280</code></td>
-                                <td>Lebar viewport browser dalam pixel. Minimal <code>100</code>.</td>
-                            </tr>
-                            <tr>
-                                <td><code>height</code></td>
-                                <td class="type-number">Number</td>
-                                <td class="req-no">NO</td>
-                                <td><code>720</code></td>
-                                <td>Tinggi viewport browser dalam pixel.</td>
-                            </tr>
-                            <tr>
-                                <td><code>full_page</code></td>
-                                <td class="type-bool">Boolean</td>
-                                <td class="req-no">NO</td>
-                                <td><code>false</code></td>
-                                <td>Jika <code>true</code>, sistem akan men-scroll ke bawah dan mengambil seluruh halaman website.</td>
-                            </tr>
-                            <tr>
-                                <td><code>device_scale</code></td>
-                                <td class="type-number">Number</td>
-                                <td class="req-no">NO</td>
-                                <td><code>1</code></td>
-                                <td>Kepadatan pixel (DPI). Gunakan <code>2</code> atau <code>3</code> untuk hasil yang lebih tajam (Retina).</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="doc-section">
-                    <h3><i class="ri-code-box-line"></i> Example Request (JSON)</h3>
-                    <pre>
-{
-  "url": "https://nekolabs.my.id",
-  "width": 1920,
-  "height": 1080,
-  "full_page": true,
-  "device_scale": 2
-}</pre>
-                </div>
-
-                <div class="doc-section">
-                    <h3><i class="ri-braces-line"></i> Response Object</h3>
-                    <p>Struktur JSON yang dikembalikan jika request berhasil (200 OK).</p>
-                    <table class="doc-table">
-                        <thead>
-                            <tr>
-                                <th>Key</th>
-                                <th>Type</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>success</code></td>
-                                <td class="type-bool">Boolean</td>
-                                <td>Status keberhasilan request (selalu <code>true</code>).</td>
-                            </tr>
-                            <tr>
-                                <td><code>image_url</code></td>
-                                <td class="type-string">String</td>
-                                <td>URL langsung ke file gambar (PNG). Valid selama 1 jam.</td>
-                            </tr>
-                            <tr>
-                                <td><code>creator</code></td>
-                                <td class="type-string">String</td>
-                                <td>Watermark response author ("SANN404 FORUM").</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="doc-card">
+                    <div class="header">
+                        <span class="username">OPTIONAL PARAMS</span>
+                    </div>
+                    <div class="body">
+                        <p class="text"><strong>width</strong> (int): Default 1280</p>
+                        <p class="text"><strong>height</strong> (int): Default 720</p>
+                        <p class="text"><strong>full_page</strong> (bool): Default false</p>
+                        <p class="text"><strong>device_scale</strong> (int): 1-3</p>
+                    </div>
+                    <div class="footer">
+                        <div>
+                           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                           Customizable
+                        </div>
+                    </div>
                 </div>
 
             </div>
         </section>
 
         <section id="about" class="credit-section">
-            <p>Developed & Maintained by <strong class="glow-text">SANN404 FORUM</strong></p>
-            <p class="version">System Version 2.5.0 (Stable)</p>
+            <p>Developed by <strong class="glow-text">SANN404</strong></p>
+            <p class="version">System V2.5.0</p>
         </section>
 
     </main>
