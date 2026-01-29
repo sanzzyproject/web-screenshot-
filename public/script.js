@@ -1,131 +1,128 @@
-// Toggle Sidebar Function
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-}
+// Konfigurasi API - Jangan diubah
+const API_URL = '/api/screenshot';
 
-// Scroll Helper
-function scrollToSection(id) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-    }
-}
+// Element Selection
+const form = document.getElementById('ss-form');
+const submitBtn = document.getElementById('submit-btn');
+const btnText = document.getElementById('btn-text');
+const loader = document.getElementById('loader');
+const resultArea = document.getElementById('result-area');
+const resultImg = document.getElementById('result-img');
+const downloadBtn = document.getElementById('download-btn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
 
-// Force Auto Download Function (Tanpa tab baru)
-async function forceDownload(imageUrl) {
-    const downloadBtn = document.getElementById('download-btn');
-    const originalText = downloadBtn.innerHTML;
-    
-    // Feedback visual
-    downloadBtn.innerHTML = '<i class="ri-loader-4-line"></i> Downloading...';
-    downloadBtn.disabled = true;
-
-    try {
-        // 1. Fetch gambar sebagai Blob
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        
-        // 2. Buat URL objek sementara
-        const blobUrl = window.URL.createObjectURL(blob);
-        
-        // 3. Buat elemen anchor tersembunyi
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = `SANN404_Screenshot_${Date.now()}.png`; // Nama file otomatis
-        document.body.appendChild(a);
-        
-        // 4. Klik otomatis
-        a.click();
-        
-        // 5. Bersihkan
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(blobUrl);
-        
-    } catch (error) {
-        console.error('Download failed:', error);
-        alert("Gagal mengunduh otomatis. Membuka di tab baru...");
-        window.open(imageUrl, '_blank');
-    } finally {
-        // Kembalikan tombol ke semula
-        downloadBtn.innerHTML = originalText;
-        downloadBtn.disabled = false;
-    }
-}
-
-// Handle Form Submit
-document.getElementById('ss-form').addEventListener('submit', async function(e) {
+// Event Listener Form
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // UI Elements
-    const submitBtn = document.getElementById('submit-btn');
-    const btnText = document.getElementById('btn-text');
-    const loader = document.getElementById('loader');
-    const resultArea = document.getElementById('result-area');
-    const resultImg = document.getElementById('result-img');
-    const downloadBtn = document.getElementById('download-btn');
-
-    // Get Values
-    const url = document.getElementById('url').value;
-    const width = document.getElementById('width').value;
-    const height = document.getElementById('height').value;
-    const device_scale = document.getElementById('scale').value;
-    const full_page = document.getElementById('fullpage').checked;
-
-    // Set Loading State
-    submitBtn.disabled = true;
-    btnText.style.display = 'none';
-    loader.style.display = 'block'; // Show rotating squares
+    
+    // UI State: Loading
+    setLoading(true);
     resultArea.style.display = 'none';
 
+    // Persiapkan Data
+    const payload = {
+        url: document.getElementById('url').value,
+        width: parseInt(document.getElementById('width').value) || 1280,
+        height: parseInt(document.getElementById('height').value) || 720,
+        device_scale: parseInt(document.getElementById('scale').value) || 1,
+        full_page: document.getElementById('fullpage').checked
+    };
+
     try {
-        const response = await fetch('/api/screenshot', {
+        // Melakukan Request ke Backend (JANGAN DIUBAH)
+        const response = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                url,
-                width: parseInt(width),
-                height: parseInt(height),
-                device_scale: parseInt(device_scale),
-                full_page
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
         const data = await response.json();
 
         if (data.success) {
-            // Set image source
-            resultImg.src = data.image_url;
-            resultArea.style.display = 'block';
-            
-            // Setup Download Button Event
-            // Kita hapus listener lama (cloning node) agar tidak menumpuk
-            const newDownloadBtn = downloadBtn.cloneNode(true);
-            downloadBtn.parentNode.replaceChild(newDownloadBtn, downloadBtn);
-            
-            newDownloadBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                forceDownload(data.image_url);
-            });
-            
-            // Scroll to result smoothly
-            setTimeout(() => {
-                resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
+            handleSuccess(data.image_url);
         } else {
-            alert('Gagal: ' + (data.message || 'Terjadi kesalahan tidak diketahui'));
+            alert('Gagal mengambil screenshot. Silakan coba lagi.');
         }
 
     } catch (error) {
-        alert('Error Connection: ' + error.message);
+        console.error('Error:', error);
+        alert('Terjadi kesalahan koneksi.');
     } finally {
-        // Reset State
-        submitBtn.disabled = false;
-        btnText.style.display = 'block';
-        loader.style.display = 'none';
+        setLoading(false);
     }
 });
+
+// Fungsi UI Helper
+function setLoading(isLoading) {
+    if (isLoading) {
+        submitBtn.disabled = true;
+        loader.style.display = 'block';
+        btnText.textContent = 'PROSES...';
+    } else {
+        submitBtn.disabled = false;
+        loader.style.display = 'none';
+        btnText.textContent = 'AMBIL SCREENSHOT';
+    }
+}
+
+// Menampilkan Hasil
+function handleSuccess(url) {
+    resultImg.src = url;
+    resultArea.style.display = 'block';
+    
+    // Scroll ke hasil
+    resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ----------------------------------------------
+// UPDATE FITUR DOWNLOAD OTOMATIS
+// ----------------------------------------------
+downloadBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    const imageUrl = resultImg.src;
+    
+    // Ubah text tombol sementara
+    const originalText = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = `<div class="loader" style="display:inline-block; border-color: black; border-bottom-color: transparent;"></div> SEDANG MENDOWNLOAD...`;
+    
+    try {
+        // 1. Fetch gambar sebagai Blob (Binary Large Object)
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        
+        // 2. Buat URL objek sementara di browser
+        const tempUrl = window.URL.createObjectURL(blob);
+        
+        // 3. Buat elemen anchor tersembunyi untuk trigger download
+        const a = document.createElement('a');
+        a.href = tempUrl;
+        
+        // Generate nama file unik berdasarkan waktu
+        const timestamp = new Date().getTime();
+        a.download = `sann404-capture-${timestamp}.png`;
+        
+        // Tambahkan ke body, klik, lalu hapus
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // Hapus URL objek untuk hemat memori
+        window.URL.revokeObjectURL(tempUrl);
+        
+    } catch (err) {
+        console.error("Gagal auto-download, fallback ke tab baru", err);
+        // Fallback jika CORS memblokir fetch blob: Buka di tab baru
+        window.open(imageUrl, '_blank');
+    } finally {
+        // Kembalikan text tombol
+        downloadBtn.innerHTML = originalText;
+    }
+});
+
+// Sidebar Toggle Logic
+function toggleSidebar() {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
